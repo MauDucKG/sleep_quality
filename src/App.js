@@ -104,7 +104,7 @@ function App() {
         header: 1,
         raw: false,
       });
-      const data1 = data.slice(120, -1).map((row) => row.slice(0, 7));
+      const data1 = data.slice(2, -1).map((row) => row.slice(0, 7));
       setExcelData(data1);
 
       const data2 = data1.map((row) => {
