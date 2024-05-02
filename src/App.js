@@ -236,7 +236,29 @@ function App() {
         })
       );
 
+      const totalTimeByStage = {};
+
+      allData.forEach((data) => {
+        const stage = data[3];
+        const duration = parseFloat(data[4]);
+  
+        if (totalTimeByStage.hasOwnProperty(stage)) {
+          totalTimeByStage[stage] += duration;
+        } else {
+          totalTimeByStage[stage] = duration;
+        }
+      });
+  
+      setTotalTimeByStage1(totalTimeByStage);
+
       setPieChartData(pieChartData);
+      const data10 = Object.entries(totalTimeByStage).map(([label, value]) => ({
+        id: label,
+        value,
+        label,
+      }));
+      
+      setPieChartData(data10);
     }
   };
   useEffect(() => {
@@ -253,6 +275,15 @@ function App() {
     });
 
     setTotalTimeByStage1(totalTimeByStage);
+
+    const data10 = Object.entries(totalTimeByStage).map(([label, value]) => ({
+      id: label,
+      value,
+      label,
+    }));
+    
+    setPieChartData(data10);
+    
     // Find the first occurrence of Sleep stage N1
     const sleepStageN1Data = allData.find(
       (data) => data[3] === " Sleep stage 1"
