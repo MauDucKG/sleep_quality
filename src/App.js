@@ -50,7 +50,7 @@ function App() {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Step chart",
+      text: "Sleep stages chart",
     },
     axisY: {
       title: "Sleep stage",
@@ -63,9 +63,11 @@ function App() {
         } else if (e.value === 3) {
           return "N3";
         } else if (e.value === 2) {
-          return "N4";
+          return "N2";
         } else if (e.value === 1) {
           return "N1";
+        } else {
+          return " ";
         }
       },
       gridThickness: 0,
@@ -241,23 +243,38 @@ function App() {
       allData.forEach((data) => {
         const stage = data[3];
         const duration = parseFloat(data[4]);
-  
+
         if (totalTimeByStage.hasOwnProperty(stage)) {
           totalTimeByStage[stage] += duration;
         } else {
           totalTimeByStage[stage] = duration;
         }
       });
-  
+
       setTotalTimeByStage1(totalTimeByStage);
 
       setPieChartData(pieChartData);
-      const data10 = Object.entries(totalTimeByStage).map(([label, value]) => ({
-        id: label,
-        value,
-        label,
-      }));
-      
+      const data10 = Object.entries(totalTimeByStage).map(([label, value]) => {
+        let modifiedLabel = label;
+        if (label === " Sleep stage R") {
+          modifiedLabel = "R";
+        } else if (label === " Sleep stage 1") {
+          modifiedLabel = "N1";
+        } else if (label === " Sleep stage 2") {
+          modifiedLabel = "N2";
+        } else if (label === " Sleep stage 3") {
+          modifiedLabel = "N3";
+        } else if (label === " Sleep stage W") {
+          modifiedLabel = "W";
+        }
+
+        return {
+          id: label,
+          value,
+          label: modifiedLabel,
+        };
+      });
+
       setPieChartData(data10);
     }
   };
@@ -276,14 +293,29 @@ function App() {
 
     setTotalTimeByStage1(totalTimeByStage);
 
-    const data10 = Object.entries(totalTimeByStage).map(([label, value]) => ({
-      id: label,
-      value,
-      label,
-    }));
-    
+    const data10 = Object.entries(totalTimeByStage).map(([label, value]) => {
+      let modifiedLabel = label;
+      if (label === " Sleep stage R") {
+        modifiedLabel = "R";
+      } else if (label === " Sleep stage 1") {
+        modifiedLabel = "N1";
+      } else if (label === " Sleep stage 2") {
+        modifiedLabel = "N2";
+      } else if (label === " Sleep stage 3") {
+        modifiedLabel = "N3";
+      } else if (label === " Sleep stage W") {
+        modifiedLabel = "W";
+      }
+
+      return {
+        id: label,
+        value,
+        label: modifiedLabel,
+      };
+    });
+
     setPieChartData(data10);
-    
+
     // Find the first occurrence of Sleep stage N1
     const sleepStageN1Data = allData.find(
       (data) => data[3] === " Sleep stage 1"
@@ -359,134 +391,61 @@ function App() {
   }, [allData]);
   return (
     <div className="wrapper">
-      <h3>Upload & View Excel Sheets</h3>
+      <h1>10 sleep parameters according to AASM standards</h1>
 
       {/* form */}
       <form className="form-group custom-form" onSubmit={handleFileSubmit}>
-        <input
-          type="file"
-          className="form-control"
-          required
-          onChange={handleFile}
-        />
-        <button type="submit" className="btn btn-success btn-md">
-          UPLOAD
-        </button>
+        <div className="row">
+          <div className="col">
+            <input
+              type="file"
+              className="form-control mt-2"
+              required
+              onChange={handleFile}
+            />
+          </div>
+          <div className="col-auto">
+            <button type="submit" className="btn-success btn">
+              Upload
+            </button>
+          </div>
+        </div>
         {typeError && (
           <div className="alert alert-danger" role="alert">
             {typeError}
           </div>
         )}
       </form>
+      <hr></hr>
 
       {/* view data */}
 
       {excelData ? (
-        <div>
-          <h5>1. Light off: {startTime}</h5>
-          <h5>2. Light on: {endTime}</h5>
-          <div>
-            <h5>3. Time in each stage: </h5>
-            <p>Sleep stage W: {totalTimeByStage1[" Sleep stage W"]}</p>
-            <p>Sleep stage R: {totalTimeByStage1[" Sleep stage R"]}</p>
-            <p>Sleep stage N3: {totalTimeByStage1[" Sleep stage 3"]}</p>
-            <p>Sleep stage N2: {totalTimeByStage1[" Sleep stage 2"]}</p>
-            <p>Sleep stage N1: {totalTimeByStage1[" Sleep stage 1"]}</p>
-            <p>
-              Sleep cycle:{" "}
-              {totalTimeByStage1[" Sleep stage W"] +
-                totalTimeByStage1[" Sleep stage R"] +
-                totalTimeByStage1[" Sleep stage 3"] +
-                totalTimeByStage1[" Sleep stage 2"] +
-                totalTimeByStage1[" Sleep stage 1"]}
-            </p>
-            <h5>4. Percentage of time in each stage:</h5>
-            <p>
-              Sleep stage W:{" "}
-              {(totalTimeByStage1[" Sleep stage W"] /
-                (totalTimeByStage1[" Sleep stage W"] +
-                  totalTimeByStage1[" Sleep stage R"] +
-                  totalTimeByStage1[" Sleep stage 3"] +
-                  totalTimeByStage1[" Sleep stage 2"] +
-                  totalTimeByStage1[" Sleep stage 1"])) *
-                100} %
-            </p>
-            <p>
-              Sleep stage R:{" "}
-              {(totalTimeByStage1[" Sleep stage R"] /
-                (totalTimeByStage1[" Sleep stage W"] +
-                  totalTimeByStage1[" Sleep stage R"] +
-                  totalTimeByStage1[" Sleep stage 3"] +
-                  totalTimeByStage1[" Sleep stage 2"] +
-                  totalTimeByStage1[" Sleep stage 1"])) *
-                100} %
-            </p>
-            <p>
-              Sleep stage N3:{" "}
-              {(totalTimeByStage1[" Sleep stage 3"] /
-                (totalTimeByStage1[" Sleep stage W"] +
-                  totalTimeByStage1[" Sleep stage R"] +
-                  totalTimeByStage1[" Sleep stage 3"] +
-                  totalTimeByStage1[" Sleep stage 2"] +
-                  totalTimeByStage1[" Sleep stage 1"])) *
-                100} %
-            </p>
-            <p>
-              Sleep stage N2:{" "}
-              {(totalTimeByStage1[" Sleep stage 2"] /
-                (totalTimeByStage1[" Sleep stage W"] +
-                  totalTimeByStage1[" Sleep stage R"] +
-                  totalTimeByStage1[" Sleep stage 3"] +
-                  totalTimeByStage1[" Sleep stage 2"] +
-                  totalTimeByStage1[" Sleep stage 1"])) *
-                100} %
-            </p>
-            <p>
-              Sleep stage N1:{" "}
-              {(totalTimeByStage1[" Sleep stage 1"] /
-                (totalTimeByStage1[" Sleep stage W"] +
-                  totalTimeByStage1[" Sleep stage R"] +
-                  totalTimeByStage1[" Sleep stage 3"] +
-                  totalTimeByStage1[" Sleep stage 2"] +
-                  totalTimeByStage1[" Sleep stage 1"])) *
-                100} %
-            </p>
-            <h5>5. Sleep latency: {sleepLatency}</h5>
-            <h5>6. Stage R latency: {sleepLatencyR}</h5>
-            <h5>
-              
-              7. Total sleep time (TST):{" "}
-              {moment
-                .utc(
-                  (totalTimeByStage1[" Sleep stage R"] +
-                    totalTimeByStage1[" Sleep stage 3"] +
-                    totalTimeByStage1[" Sleep stage 2"] +
-                    totalTimeByStage1[" Sleep stage 1"]) *
-                    1000
-                )
-                .format("HH:mm:ss")}
-            </h5>
-            <h5>8. otal recording time (TRT): {formattedTRT}</h5>
-            <h5>9. Wake after sleep onset (WASO): {waso}</h5>
-            <h5>
-              10. Percent sleep efficiency:{" "}
-              {((totalTimeByStage1[" Sleep stage R"] +
-                totalTimeByStage1[" Sleep stage 3"] +
-                totalTimeByStage1[" Sleep stage 2"] +
-                totalTimeByStage1[" Sleep stage 1"]) *
-                100) /
-                moment.duration(formattedTRT).asSeconds()} %
-            </h5>
-          </div>
-        </div>
-      ) : null}
-
-      {excelData ? (
         <div className="chart-options  justify-content-center">
           <div className="row">
-            <div className="col-md-5">
+            <div className="row col-5">
+              <div className="col-md-4 mt-2">
+                <div className="input-group mb-3">
+                  <span className="input-group-text">Night</span>
+                  <input type="text" className="form-control" />
+                </div>
+              </div>
+              <div className="col-md-4 mt-2">
+                <div className="input-group mb-3">
+                  <span className="input-group-text">Age</span>
+                  <input type="number" className="form-control" />
+                </div>
+              </div>
+              <div className="col-md-4 mt-2">
+                <div className="input-group mb-3">
+                  <span className="input-group-text">Sex</span>
+                  <input type="text" className="form-control" />
+                </div>
+              </div>
+            </div>
+            <div className="col-md-3 mt-2">
               <div className="input-group mb-3">
-                <span className="input-group-text">Start Time</span>
+                <span className="input-group-text">Lights Off</span>
                 <input
                   type="time"
                   className="form-control pt-2"
@@ -495,9 +454,9 @@ function App() {
                 />
               </div>
             </div>
-            <div className="col-md-5">
+            <div className="col-md-3 mt-2">
               <div className="input-group mb-3">
-                <span className="input-group-text">End Time</span>
+                <span className="input-group-text">Lights On</span>
                 <input
                   type="time"
                   className="form-control pt-2"
@@ -508,16 +467,165 @@ function App() {
                 />
               </div>
             </div>
-            <div className="col-md-2">
+            <div className="col-md-1">
               <div className="input-group">
                 <button
                   type="submit"
-                  className="btn btn-info"
+                  className="btn-success btn"
                   onClick={handleTimeChange}
                 >
-                  Change time
+                  Load
                 </button>
               </div>
+            </div>
+          </div>
+          <hr></hr>
+        </div>
+      ) : null}
+
+      {excelData ? (
+        <div className="">
+          <div className="row align-items-center">
+            <div className="col-4">
+              <p>
+                <strong>Sleep latency:</strong> {sleepLatency}
+              </p>
+              <p>
+                <strong>Stage R latency:</strong> {sleepLatencyR}
+              </p>
+              <p>
+                <strong>Total sleep time (TST):</strong>{" "}
+                {moment
+                  .utc(
+                    (totalTimeByStage1[" Sleep stage R"] +
+                      totalTimeByStage1[" Sleep stage 3"] +
+                      totalTimeByStage1[" Sleep stage 2"] +
+                      totalTimeByStage1[" Sleep stage 1"]) *
+                      1000
+                  )
+                  .format("HH:mm:ss")}
+              </p>
+              <p>
+                <strong>Total recording time (TRT):</strong> {formattedTRT}
+              </p>
+              <p>
+                <strong>Wake after sleep onset (WASO):</strong> {waso}
+              </p>
+              <p>
+                <strong>Percent sleep efficiency:</strong>{" "}
+                {(
+                  ((totalTimeByStage1[" Sleep stage R"] +
+                    totalTimeByStage1[" Sleep stage 3"] +
+                    totalTimeByStage1[" Sleep stage 2"] +
+                    totalTimeByStage1[" Sleep stage 1"]) *
+                    100) /
+                  moment.duration(formattedTRT).asSeconds()
+                ).toFixed(2)}
+                %
+              </p>
+            </div>
+            <div className="col-4">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Sleep stage</th>
+                    <th>Value</th>
+                    <th>%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Sleep stage W</td>
+                    <td>{totalTimeByStage1[" Sleep stage W"]} s</td>
+                    <td>
+                      {(
+                        (totalTimeByStage1[" Sleep stage W"] /
+                          (totalTimeByStage1[" Sleep stage W"] +
+                            totalTimeByStage1[" Sleep stage R"] +
+                            totalTimeByStage1[" Sleep stage 3"] +
+                            totalTimeByStage1[" Sleep stage 2"] +
+                            totalTimeByStage1[" Sleep stage 1"])) *
+                        100
+                      ).toFixed(2)}
+                      %
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Sleep stage R</td>
+                    <td>{totalTimeByStage1[" Sleep stage R"]} s</td>
+                    <td>
+                      {(
+                        (totalTimeByStage1[" Sleep stage R"] /
+                          (totalTimeByStage1[" Sleep stage W"] +
+                            totalTimeByStage1[" Sleep stage R"] +
+                            totalTimeByStage1[" Sleep stage 3"] +
+                            totalTimeByStage1[" Sleep stage 2"] +
+                            totalTimeByStage1[" Sleep stage 1"])) *
+                        100
+                      ).toFixed(2)}
+                      %
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Sleep stage N3</td>
+                    <td>{totalTimeByStage1[" Sleep stage 3"]} s</td>
+                    <td>
+                      {(
+                        (totalTimeByStage1[" Sleep stage 3"] /
+                          (totalTimeByStage1[" Sleep stage W"] +
+                            totalTimeByStage1[" Sleep stage R"] +
+                            totalTimeByStage1[" Sleep stage 3"] +
+                            totalTimeByStage1[" Sleep stage 2"] +
+                            totalTimeByStage1[" Sleep stage 1"])) *
+                        100
+                      ).toFixed(2)}
+                      %
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Sleep stage N2</td>
+                    <td>{totalTimeByStage1[" Sleep stage 2"]} s</td>
+                    <td>
+                      {(
+                        (totalTimeByStage1[" Sleep stage 2"] /
+                          (totalTimeByStage1[" Sleep stage W"] +
+                            totalTimeByStage1[" Sleep stage R"] +
+                            totalTimeByStage1[" Sleep stage 3"] +
+                            totalTimeByStage1[" Sleep stage 2"] +
+                            totalTimeByStage1[" Sleep stage 1"])) *
+                        100
+                      ).toFixed(2)}
+                      %
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Sleep stage N1</td>
+                    <td>{totalTimeByStage1[" Sleep stage 1"]} s</td>
+                    <td>
+                      {(
+                        (totalTimeByStage1[" Sleep stage 1"] /
+                          (totalTimeByStage1[" Sleep stage W"] +
+                            totalTimeByStage1[" Sleep stage R"] +
+                            totalTimeByStage1[" Sleep stage 3"] +
+                            totalTimeByStage1[" Sleep stage 2"] +
+                            totalTimeByStage1[" Sleep stage 1"])) *
+                        100
+                      ).toFixed(2)}
+                      %
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="col-4">
+              <PieChart
+                series={[
+                  {
+                    data: pieChartData,
+                  },
+                ]}
+                height={200}
+              />
             </div>
           </div>
         </div>
@@ -530,44 +638,11 @@ function App() {
         />
       ) : null}
 
-      {excelData ? (
-        <PieChart
-          series={[
-            {
-              data: pieChartData,
-            },
-          ]}
-          width={500}
-          height={200}
-        />
-      ) : null}
-      <div className="viewer">
-        {excelData ? (
-          <div className="table-responsive">
-            {/* <table className="table">
-              <thead>
-                <tr>
-                  {Object.keys(excelData[0]).map((key) => (
-                    <th key={key}>{key}</th>
-                  ))}
-                </tr>
-              </thead>
-
-              <tbody>
-                {excelData.map((individualExcelData, index) => (
-                  <tr key={index}>
-                    {Object.keys(individualExcelData).map((key) => (
-                      <td key={key}>{individualExcelData[key]}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table> */}
-          </div>
-        ) : (
+      {excelData ? null : (
+        <div className="viewer">
           <div>No File is uploaded yet!</div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
