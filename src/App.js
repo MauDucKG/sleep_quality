@@ -265,6 +265,8 @@ function App() {
           return {};
         } else if (label === "Sleep stage ?") {
           return {};
+        } else if (label === "undefined") {
+          return {};
         }
 
         return {
@@ -308,7 +310,9 @@ function App() {
         return {};
       } else if (label === "Sleep stage ?") {
         return {};
-      }
+      } else if (label === "undefined") {
+        return {};
+      } 
 
       return {
         id: label,
