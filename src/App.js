@@ -50,7 +50,7 @@ function App() {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Sleep stages chart",
+      text: "Hypnogram",
     },
     axisY: {
       title: "Sleep stage",
@@ -116,7 +116,7 @@ function App() {
         header: 1,
         raw: false,
       });
-      const data1 = data.slice(2, -1).map((row) => {
+      const data1 = data.slice(2, -2).map((row) => {
         const timeString = row[1]; // Value in column 2
         const time = moment(timeString, "h:mm:ss A"); // Convert to a time object
         return [...row.slice(0, 1), time, ...row.slice(2, 7)]; // Replace column 2 with the time object
@@ -126,17 +126,17 @@ function App() {
 
       const data2 = data1.map((row) => row[1]);
 
-      const data3 = data1.map((row) => row[3]);
+      const data3 = data1.map((row) => row[4]);
       const data4 = data3.map((value) => {
-        if (value === " Sleep stage W") {
+        if (value === "Sleep stage W") {
           return 5;
-        } else if (value === " Sleep stage R") {
+        } else if (value === "Sleep stage R") {
           return 4;
-        } else if (value === " Sleep stage 3") {
+        } else if (value === "Sleep stage 3") {
           return 1;
-        } else if (value === " Sleep stage 2") {
+        } else if (value === "Sleep stage 2") {
           return 2;
-        } else if (value === " Sleep stage 1") {
+        } else if (value === "Sleep stage 1") {
           return 1;
         } else {
           return 0;
@@ -155,18 +155,14 @@ function App() {
 
       setStartTime(data6[0].x.toTimeString().slice(0, 8));
       setEndTime(data6[data6.length - 1].x.toTimeString().slice(0, 8));
-      // Find the first occurrence of Sleep stage N1
+      // Find the first occurrence ofSleep stage N1
       const sleepStageN1Data = data1.find(
-        (data) => data[3] === " Sleep stage 1"
+        (data) => data[4] === "Sleep stage 1"
       );
 
-      const sleepStageRData = data1.find(
-        (data) => data[3] === " Sleep stage R"
-      );
+      const sleepStageRData = data1.find((data) => data[4] === "Sleep stage R");
 
-      const sleepStageWData = data1.find(
-        (data) => data[3] === " Sleep stage W"
-      );
+      const sleepStageWData = data1.find((data) => data[4] === "Sleep stage W");
 
       if (sleepStageN1Data && startTime !== undefined) {
         const sleepTime = moment(
@@ -241,9 +237,8 @@ function App() {
       const totalTimeByStage = {};
 
       allData.forEach((data) => {
-        const stage = data[3];
-        const duration = parseFloat(data[4]);
-
+        const stage = data[4];
+        const duration = parseFloat(data[3]);
         if (totalTimeByStage.hasOwnProperty(stage)) {
           totalTimeByStage[stage] += duration;
         } else {
@@ -256,16 +251,20 @@ function App() {
       setPieChartData(pieChartData);
       const data10 = Object.entries(totalTimeByStage).map(([label, value]) => {
         let modifiedLabel = label;
-        if (label === " Sleep stage R") {
+        if (label === "Sleep stage R") {
           modifiedLabel = "R";
-        } else if (label === " Sleep stage 1") {
+        } else if (label === "Sleep stage 1") {
           modifiedLabel = "N1";
-        } else if (label === " Sleep stage 2") {
+        } else if (label === "Sleep stage 2") {
           modifiedLabel = "N2";
-        } else if (label === " Sleep stage 3") {
+        } else if (label === "Sleep stage 3") {
           modifiedLabel = "N3";
-        } else if (label === " Sleep stage W") {
+        } else if (label === "Sleep stage W") {
           modifiedLabel = "W";
+        } else if (label === "Movementtime") {
+          return {};
+        } else if (label === "Sleep stage ?") {
+          return {};
         }
 
         return {
@@ -281,8 +280,8 @@ function App() {
   useEffect(() => {
     const totalTimeByStage = {};
     allData.forEach((data) => {
-      const stage = data[3];
-      const duration = parseFloat(data[4]);
+      const stage = data[4];
+      const duration = parseFloat(data[3]);
 
       if (totalTimeByStage.hasOwnProperty(stage)) {
         totalTimeByStage[stage] += duration;
@@ -295,16 +294,20 @@ function App() {
 
     const data10 = Object.entries(totalTimeByStage).map(([label, value]) => {
       let modifiedLabel = label;
-      if (label === " Sleep stage R") {
+      if (label === "Sleep stage R") {
         modifiedLabel = "R";
-      } else if (label === " Sleep stage 1") {
+      } else if (label === "Sleep stage 1") {
         modifiedLabel = "N1";
-      } else if (label === " Sleep stage 2") {
+      } else if (label === "Sleep stage 2") {
         modifiedLabel = "N2";
-      } else if (label === " Sleep stage 3") {
+      } else if (label === "Sleep stage 3") {
         modifiedLabel = "N3";
-      } else if (label === " Sleep stage W") {
+      } else if (label === "Sleep stage W") {
         modifiedLabel = "W";
+      } else if (label === "Movementtime") {
+        return {};
+      } else if (label === "Sleep stage ?") {
+        return {};
       }
 
       return {
@@ -316,18 +319,14 @@ function App() {
 
     setPieChartData(data10);
 
-    // Find the first occurrence of Sleep stage N1
+    // Find the first occurrence ofSleep stage N1
     const sleepStageN1Data = allData.find(
-      (data) => data[3] === " Sleep stage 1"
+      (data) => data[4] === "Sleep stage 1"
     );
 
-    const sleepStageRData = allData.find(
-      (data) => data[3] === " Sleep stage R"
-    );
+    const sleepStageRData = allData.find((data) => data[4] === "Sleep stage R");
 
-    const sleepStageWData = allData.find(
-      (data) => data[3] === " Sleep stage W"
-    );
+    const sleepStageWData = allData.find((data) => data[4] === "Sleep stage W");
 
     if (sleepStageN1Data && startTime !== undefined) {
       const sleepTime = moment(
@@ -389,6 +388,31 @@ function App() {
       setWASO(formattedWASO);
     }
   }, [allData]);
+
+  const {
+    "Sleep stage W": W,
+    "Sleep stage R": R,
+    "Sleep stage 3": S3,
+    "Sleep stage 2": S2,
+    "Sleep stage 1": S1,
+  } = totalTimeByStage1;
+  const conditionCount =
+    ((S2 / (W + R + S3 + S2 + S1)) * 100 >= 40 &&
+    (S2 / (W + R + S3 + S2 + S1)) * 100 <= 60
+      ? 1
+      : 0) +
+    ((S3 / (W + R + S3 + S2 + S1)) * 100 >= 15 &&
+    (S3 / (W + R + S3 + S2 + S1)) * 100 <= 30
+      ? 1
+      : 0) +
+    ((R / (W + R + S3 + S2 + S1)) * 100 >= 15 &&
+    (R / (W + R + S3 + S2 + S1)) * 100 <= 30
+      ? 1
+      : 0);
+
+  function handleReload() {
+    window.location.reload();
+  }
   return (
     <div className="wrapper">
       <h1>10 sleep parameters according to AASM standards</h1>
@@ -408,6 +432,16 @@ function App() {
             <button type="submit" className="btn-success btn">
               Upload
             </button>
+
+            {excelData ? (
+              <button
+                type="button"
+                className="btn btn-danger ms-1"
+                onClick={handleReload}
+              >
+                Remove
+              </button>
+            ) : null}
           </div>
         </div>
         {typeError && (
@@ -486,138 +520,149 @@ function App() {
       {excelData ? (
         <div className="">
           <div className="row align-items-center">
-            <div className="col-4">
-              <p>
-                <strong>Sleep latency:</strong> {sleepLatency}
-              </p>
-              <p>
-                <strong>Stage R latency:</strong> {sleepLatencyR}
-              </p>
-              <p>
-                <strong>Total sleep time (TST):</strong>{" "}
-                {moment
-                  .utc(
-                    (totalTimeByStage1[" Sleep stage R"] +
-                      totalTimeByStage1[" Sleep stage 3"] +
-                      totalTimeByStage1[" Sleep stage 2"] +
-                      totalTimeByStage1[" Sleep stage 1"]) *
-                      1000
-                  )
-                  .format("HH:mm:ss")}
-              </p>
-              <p>
-                <strong>Total recording time (TRT):</strong> {formattedTRT}
-              </p>
-              <p>
-                <strong>Wake after sleep onset (WASO):</strong> {waso}
-              </p>
-              <p>
-                <strong>Percent sleep efficiency:</strong>{" "}
-                {(
-                  ((totalTimeByStage1[" Sleep stage R"] +
-                    totalTimeByStage1[" Sleep stage 3"] +
-                    totalTimeByStage1[" Sleep stage 2"] +
-                    totalTimeByStage1[" Sleep stage 1"]) *
-                    100) /
-                  moment.duration(formattedTRT).asSeconds()
-                ).toFixed(2)}
-                %
-              </p>
+            <div className="col-8">
+              <h5 className="text-center pb-3">
+                <strong>Data Analysis</strong>
+              </h5>
+              <div className="row">
+                <div className="col-6">
+                  <p>
+                    <strong>Sleep latency:</strong> {sleepLatency}
+                  </p>
+                  <p>
+                    <strong>Stage R latency:</strong> {sleepLatencyR}
+                  </p>
+                  <p>
+                    <strong>Total sleep time (TST):</strong>{" "}
+                    {moment
+                      .utc(
+                        (totalTimeByStage1["Sleep stage R"] +
+                          totalTimeByStage1["Sleep stage 3"] +
+                          totalTimeByStage1["Sleep stage 2"] +
+                          totalTimeByStage1["Sleep stage 1"]) *
+                          1000
+                      )
+                      .format("HH:mm:ss")}
+                  </p>
+                  <p>
+                    <strong>Total recording time (TRT):</strong> {formattedTRT}
+                  </p>
+                  <p>
+                    <strong>Wake after sleep onset (WASO):</strong> {waso}
+                  </p>
+                  <p>
+                    <strong>Percent sleep efficiency:</strong>{" "}
+                    {(
+                      ((totalTimeByStage1["Sleep stage R"] +
+                        totalTimeByStage1["Sleep stage 3"] +
+                        totalTimeByStage1["Sleep stage 2"] +
+                        totalTimeByStage1["Sleep stage 1"]) *
+                        100) /
+                      moment.duration(formattedTRT).asSeconds()
+                    ).toFixed(2)}
+                    %
+                  </p>
+                </div>
+                <div className="col-6">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Sleep stage</th>
+                        <th>Value</th>
+                        <th>%</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Sleep stage W</td>
+                        <td>{totalTimeByStage1["Sleep stage W"]} s</td>
+                        <td>
+                          {(
+                            (totalTimeByStage1["Sleep stage W"] /
+                              (totalTimeByStage1["Sleep stage W"] +
+                                totalTimeByStage1["Sleep stage R"] +
+                                totalTimeByStage1["Sleep stage 3"] +
+                                totalTimeByStage1["Sleep stage 2"] +
+                                totalTimeByStage1["Sleep stage 1"])) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Sleep stage R</td>
+                        <td>{totalTimeByStage1["Sleep stage R"]} s</td>
+                        <td>
+                          {(
+                            (totalTimeByStage1["Sleep stage R"] /
+                              (totalTimeByStage1["Sleep stage W"] +
+                                totalTimeByStage1["Sleep stage R"] +
+                                totalTimeByStage1["Sleep stage 3"] +
+                                totalTimeByStage1["Sleep stage 2"] +
+                                totalTimeByStage1["Sleep stage 1"])) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Sleep stage N3</td>
+                        <td>{totalTimeByStage1["Sleep stage 3"]} s</td>
+                        <td>
+                          {(
+                            (totalTimeByStage1["Sleep stage 3"] /
+                              (totalTimeByStage1["Sleep stage W"] +
+                                totalTimeByStage1["Sleep stage R"] +
+                                totalTimeByStage1["Sleep stage 3"] +
+                                totalTimeByStage1["Sleep stage 2"] +
+                                totalTimeByStage1["Sleep stage 1"])) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Sleep stage N2</td>
+                        <td>{totalTimeByStage1["Sleep stage 2"]} s</td>
+                        <td>
+                          {(
+                            (totalTimeByStage1["Sleep stage 2"] /
+                              (totalTimeByStage1["Sleep stage W"] +
+                                totalTimeByStage1["Sleep stage R"] +
+                                totalTimeByStage1["Sleep stage 3"] +
+                                totalTimeByStage1["Sleep stage 2"] +
+                                totalTimeByStage1["Sleep stage 1"])) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Sleep stage N1</td>
+                        <td>{totalTimeByStage1["Sleep stage 1"]} s</td>
+                        <td>
+                          {(
+                            (totalTimeByStage1["Sleep stage 1"] /
+                              (totalTimeByStage1["Sleep stage W"] +
+                                totalTimeByStage1["Sleep stage R"] +
+                                totalTimeByStage1["Sleep stage 3"] +
+                                totalTimeByStage1["Sleep stage 2"] +
+                                totalTimeByStage1["Sleep stage 1"])) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
+
             <div className="col-4">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Sleep stage</th>
-                    <th>Value</th>
-                    <th>%</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Sleep stage W</td>
-                    <td>{totalTimeByStage1[" Sleep stage W"]} s</td>
-                    <td>
-                      {(
-                        (totalTimeByStage1[" Sleep stage W"] /
-                          (totalTimeByStage1[" Sleep stage W"] +
-                            totalTimeByStage1[" Sleep stage R"] +
-                            totalTimeByStage1[" Sleep stage 3"] +
-                            totalTimeByStage1[" Sleep stage 2"] +
-                            totalTimeByStage1[" Sleep stage 1"])) *
-                        100
-                      ).toFixed(2)}
-                      %
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Sleep stage R</td>
-                    <td>{totalTimeByStage1[" Sleep stage R"]} s</td>
-                    <td>
-                      {(
-                        (totalTimeByStage1[" Sleep stage R"] /
-                          (totalTimeByStage1[" Sleep stage W"] +
-                            totalTimeByStage1[" Sleep stage R"] +
-                            totalTimeByStage1[" Sleep stage 3"] +
-                            totalTimeByStage1[" Sleep stage 2"] +
-                            totalTimeByStage1[" Sleep stage 1"])) *
-                        100
-                      ).toFixed(2)}
-                      %
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Sleep stage N3</td>
-                    <td>{totalTimeByStage1[" Sleep stage 3"]} s</td>
-                    <td>
-                      {(
-                        (totalTimeByStage1[" Sleep stage 3"] /
-                          (totalTimeByStage1[" Sleep stage W"] +
-                            totalTimeByStage1[" Sleep stage R"] +
-                            totalTimeByStage1[" Sleep stage 3"] +
-                            totalTimeByStage1[" Sleep stage 2"] +
-                            totalTimeByStage1[" Sleep stage 1"])) *
-                        100
-                      ).toFixed(2)}
-                      %
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Sleep stage N2</td>
-                    <td>{totalTimeByStage1[" Sleep stage 2"]} s</td>
-                    <td>
-                      {(
-                        (totalTimeByStage1[" Sleep stage 2"] /
-                          (totalTimeByStage1[" Sleep stage W"] +
-                            totalTimeByStage1[" Sleep stage R"] +
-                            totalTimeByStage1[" Sleep stage 3"] +
-                            totalTimeByStage1[" Sleep stage 2"] +
-                            totalTimeByStage1[" Sleep stage 1"])) *
-                        100
-                      ).toFixed(2)}
-                      %
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Sleep stage N1</td>
-                    <td>{totalTimeByStage1[" Sleep stage 1"]} s</td>
-                    <td>
-                      {(
-                        (totalTimeByStage1[" Sleep stage 1"] /
-                          (totalTimeByStage1[" Sleep stage W"] +
-                            totalTimeByStage1[" Sleep stage R"] +
-                            totalTimeByStage1[" Sleep stage 3"] +
-                            totalTimeByStage1[" Sleep stage 2"] +
-                            totalTimeByStage1[" Sleep stage 1"])) *
-                        100
-                      ).toFixed(2)}
-                      %
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="col-4">
+              <h5 className="text-center pb-3">
+                <strong>Pie Chart</strong>
+              </h5>
               <PieChart
                 series={[
                   {
@@ -629,6 +674,33 @@ function App() {
             </div>
           </div>
         </div>
+      ) : null}
+
+      {excelData ? (
+        <>
+          {conditionCount === 3 && (
+            <div className="alert alert-success text-center">
+              <div>
+                <strong>User Status: </strong>Tình trạng bình thường
+              </div>
+            </div>
+          )}
+          {(conditionCount === 2 || conditionCount === 1) && (
+            <div className="alert alert-warning text-center">
+              <div>
+                <strong>User Status: </strong>Tình trạng xem xét
+              </div>
+            </div>
+          )}
+
+          {conditionCount === 0 && (
+            <div className="alert alert-danger text-center">
+              <div>
+                <strong>User Status: </strong>Tình trạng bất thường
+              </div>
+            </div>
+          )}
+        </>
       ) : null}
 
       {excelData ? (
