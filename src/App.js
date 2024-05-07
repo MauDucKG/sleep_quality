@@ -53,19 +53,19 @@ function App() {
       text: "Hypnogram",
     },
     axisY: {
-      title: "Sleep stage",
+      title: "Giai đoạn giấc ngủ",
       includeZero: true,
       labelFormatter: function (e) {
         if (e.value === 5) {
-          return "W";
+          return "Wake";
         } else if (e.value === 4) {
-          return "R";
+          return "REM";
         } else if (e.value === 3) {
-          return "N3";
+          return "Non-REM N3";
         } else if (e.value === 2) {
-          return "N2";
+          return "Non-REM N2";
         } else if (e.value === 1) {
-          return "N1";
+          return "Non-REM N1";
         } else {
           return " ";
         }
@@ -312,7 +312,7 @@ function App() {
         return {};
       } else if (label === "undefined") {
         return {};
-      } 
+      }
 
       return {
         id: label,
@@ -419,9 +419,6 @@ function App() {
   }
   return (
     <div className="wrapper">
-      <h1>10 sleep parameters according to AASM standards</h1>
-
-      {/* form */}
       <form className="form-group custom-form" onSubmit={handleFileSubmit}>
         <div className="row">
           <div className="col">
@@ -434,7 +431,7 @@ function App() {
           </div>
           <div className="col-auto">
             <button type="submit" className="btn-success btn">
-              Upload
+              Tải lên
             </button>
 
             {excelData ? (
@@ -443,7 +440,7 @@ function App() {
                 className="btn btn-danger ms-1"
                 onClick={handleReload}
               >
-                Remove
+                Xoá
               </button>
             ) : null}
           </div>
@@ -461,29 +458,29 @@ function App() {
       {excelData ? (
         <div className="chart-options  justify-content-center">
           <div className="row">
-            <div className="row col-5">
+            <div className="row col-12">
               <div className="col-md-4 mt-2">
                 <div className="input-group mb-3">
-                  <span className="input-group-text">Night</span>
+                  <span className="input-group-text">Đêm thứ</span>
                   <input type="text" className="form-control" />
                 </div>
               </div>
               <div className="col-md-4 mt-2">
                 <div className="input-group mb-3">
-                  <span className="input-group-text">Age</span>
+                  <span className="input-group-text">Tuổi</span>
                   <input type="number" className="form-control" />
                 </div>
               </div>
               <div className="col-md-4 mt-2">
                 <div className="input-group mb-3">
-                  <span className="input-group-text">Sex</span>
+                  <span className="input-group-text">Giới tính</span>
                   <input type="text" className="form-control" />
                 </div>
               </div>
             </div>
-            <div className="col-md-3 mt-2">
+            <div className="col-md-5 mt-2">
               <div className="input-group mb-3">
-                <span className="input-group-text">Lights Off</span>
+                <span className="input-group-text">Thời gian tắt đèn đi ngủ</span>
                 <input
                   type="time"
                   className="form-control pt-2"
@@ -492,9 +489,9 @@ function App() {
                 />
               </div>
             </div>
-            <div className="col-md-3 mt-2">
+            <div className="col-md-5 mt-2">
               <div className="input-group mb-3">
-                <span className="input-group-text">Lights On</span>
+                <span className="input-group-text">Thời gian bật đèn thức dậy</span>
                 <input
                   type="time"
                   className="form-control pt-2"
@@ -505,14 +502,14 @@ function App() {
                 />
               </div>
             </div>
-            <div className="col-md-1">
+            <div className="col-md-2">
               <div className="input-group">
                 <button
                   type="submit"
                   className="btn-success btn"
                   onClick={handleTimeChange}
                 >
-                  Load
+                  Tải dữ liệu
                 </button>
               </div>
             </div>
@@ -526,18 +523,18 @@ function App() {
           <div className="row align-items-center">
             <div className="col-8">
               <h5 className="text-center pb-3">
-                <strong>Data Analysis</strong>
+                <strong>Thống kê dữ liệu</strong>
               </h5>
               <div className="row">
                 <div className="col-6">
                   <p>
-                    <strong>Sleep latency:</strong> {sleepLatency}
+                    <strong>Độ trễ của giấc ngủ:</strong> {sleepLatency}
                   </p>
                   <p>
-                    <strong>Stage R latency:</strong> {sleepLatencyR}
+                    <strong>Độ trễ của Giai đoạn R:</strong> {sleepLatencyR}
                   </p>
                   <p>
-                    <strong>Total sleep time (TST):</strong>{" "}
+                    <strong>Tổng thời gian ngủ:</strong>{" "}
                     {moment
                       .utc(
                         (totalTimeByStage1["Sleep stage R"] +
@@ -549,13 +546,13 @@ function App() {
                       .format("HH:mm:ss")}
                   </p>
                   <p>
-                    <strong>Total recording time (TRT):</strong> {formattedTRT}
+                    <strong>Tổng thời gian ghi dữ liệu:</strong> {formattedTRT}
                   </p>
                   <p>
-                    <strong>Wake after sleep onset (WASO):</strong> {waso}
+                    <strong>Sự thức tỉnh sau khi bắt đầu ngủ:</strong> {waso}
                   </p>
                   <p>
-                    <strong>Percent sleep efficiency:</strong>{" "}
+                    <strong>% Hiệu quả của giấc ngủ:</strong>{" "}
                     {(
                       ((totalTimeByStage1["Sleep stage R"] +
                         totalTimeByStage1["Sleep stage 3"] +
@@ -571,14 +568,14 @@ function App() {
                   <table class="table table-bordered">
                     <thead>
                       <tr>
-                        <th>Sleep stage</th>
+                        <th>Giai đoạn giấc ngủ</th>
                         <th>Value</th>
                         <th>%</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td>Sleep stage W</td>
+                        <td>Wake</td>
                         <td>{totalTimeByStage1["Sleep stage W"]} s</td>
                         <td>
                           {(
@@ -594,7 +591,7 @@ function App() {
                         </td>
                       </tr>
                       <tr>
-                        <td>Sleep stage R</td>
+                        <td>REM</td>
                         <td>{totalTimeByStage1["Sleep stage R"]} s</td>
                         <td>
                           {(
@@ -610,7 +607,7 @@ function App() {
                         </td>
                       </tr>
                       <tr>
-                        <td>Sleep stage N3</td>
+                        <td>Non-REM N3</td>
                         <td>{totalTimeByStage1["Sleep stage 3"]} s</td>
                         <td>
                           {(
@@ -626,7 +623,7 @@ function App() {
                         </td>
                       </tr>
                       <tr>
-                        <td>Sleep stage N2</td>
+                        <td>SNon-REM N2</td>
                         <td>{totalTimeByStage1["Sleep stage 2"]} s</td>
                         <td>
                           {(
@@ -642,7 +639,7 @@ function App() {
                         </td>
                       </tr>
                       <tr>
-                        <td>Sleep stage N1</td>
+                        <td>Non-REM N1</td>
                         <td>{totalTimeByStage1["Sleep stage 1"]} s</td>
                         <td>
                           {(
@@ -665,7 +662,9 @@ function App() {
 
             <div className="col-4">
               <h5 className="text-center pb-3">
-                <strong>Pie Chart</strong>
+                <strong>Biểu đồ tròn thể hiện </strong> 
+                <br></br>
+                  <strong>% giai đoạn giấc ngủ</strong>
               </h5>
               <PieChart
                 series={[
@@ -685,14 +684,14 @@ function App() {
           {conditionCount === 3 && (
             <div className="alert alert-success text-center">
               <div>
-                <strong>User Status: </strong>Tình trạng bình thường
+                <strong>Tình trạng giấc ngủ của đối tượng: </strong>Tình trạng bình thường
               </div>
             </div>
           )}
           {(conditionCount === 2 || conditionCount === 1) && (
             <div className="alert alert-warning text-center">
               <div>
-                <strong>User Status: </strong>Tình trạng xem xét
+                <strong>Tình trạng giấc ngủ của đối tượng: </strong>Tình trạng xem xét
               </div>
             </div>
           )}
@@ -700,7 +699,7 @@ function App() {
           {conditionCount === 0 && (
             <div className="alert alert-danger text-center">
               <div>
-                <strong>User Status: </strong>Tình trạng bất thường
+                <strong>Tình trạng giấc ngủ của đối tượng: </strong>Tình trạng bất thường
               </div>
             </div>
           )}
@@ -716,7 +715,7 @@ function App() {
 
       {excelData ? null : (
         <div className="viewer">
-          <div>No File is uploaded yet!</div>
+          <div>Chưa có file được tải lên!!!</div>
         </div>
       )}
     </div>
