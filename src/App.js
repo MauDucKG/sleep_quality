@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
-import { PieChart } from "@mui/x-charts/PieChart";
+import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import CanvasJSReact from "@canvasjs/react-charts";
 import moment from "moment";
 
@@ -252,15 +252,15 @@ function App() {
       const data10 = Object.entries(totalTimeByStage).map(([label, value]) => {
         let modifiedLabel = label;
         if (label === "Sleep stage R") {
-          modifiedLabel = "R";
+          modifiedLabel = "REM";
         } else if (label === "Sleep stage 1") {
-          modifiedLabel = "N1";
+          modifiedLabel = "Non-REM N1";
         } else if (label === "Sleep stage 2") {
-          modifiedLabel = "N2";
+          modifiedLabel = "Non-REM N2";
         } else if (label === "Sleep stage 3") {
-          modifiedLabel = "N3";
+          modifiedLabel = "Non-REM N3";
         } else if (label === "Sleep stage W") {
-          modifiedLabel = "W";
+          modifiedLabel = "Wake";
         } else if (label === "Movementtime") {
           return {};
         } else if (label === "Sleep stage ?") {
@@ -297,15 +297,15 @@ function App() {
     const data10 = Object.entries(totalTimeByStage).map(([label, value]) => {
       let modifiedLabel = label;
       if (label === "Sleep stage R") {
-        modifiedLabel = "R";
+        modifiedLabel = "REM";
       } else if (label === "Sleep stage 1") {
-        modifiedLabel = "N1";
+        modifiedLabel = "Non-REM N1";
       } else if (label === "Sleep stage 2") {
-        modifiedLabel = "N2";
+        modifiedLabel = "Non-REM N2";
       } else if (label === "Sleep stage 3") {
-        modifiedLabel = "N3";
+        modifiedLabel = "Non-REM N3";
       } else if (label === "Sleep stage W") {
-        modifiedLabel = "W";
+        modifiedLabel = "Wake";
       } else if (label === "Movementtime") {
         return {};
       } else if (label === "Sleep stage ?") {
@@ -417,6 +417,11 @@ function App() {
   function handleReload() {
     window.location.reload();
   }
+
+  const size = {
+    height: 200,
+  };
+
   return (
     <div className="wrapper">
       <form className="form-group custom-form" onSubmit={handleFileSubmit}>
@@ -480,7 +485,9 @@ function App() {
             </div>
             <div className="col-md-5 mt-2">
               <div className="input-group mb-3">
-                <span className="input-group-text">Thời gian tắt đèn đi ngủ</span>
+                <span className="input-group-text">
+                  Thời gian tắt đèn đi ngủ
+                </span>
                 <input
                   type="time"
                   className="form-control pt-2"
@@ -491,7 +498,9 @@ function App() {
             </div>
             <div className="col-md-5 mt-2">
               <div className="input-group mb-3">
-                <span className="input-group-text">Thời gian bật đèn thức dậy</span>
+                <span className="input-group-text">
+                  Thời gian bật đèn thức dậy
+                </span>
                 <input
                   type="time"
                   className="form-control pt-2"
@@ -521,12 +530,12 @@ function App() {
       {excelData ? (
         <div className="">
           <div className="row align-items-center">
-            <div className="col-8">
+            <div className="col-md-7">
               <h5 className="text-center pb-3">
                 <strong>Thống kê dữ liệu</strong>
               </h5>
               <div className="row">
-                <div className="col-6">
+                <div className="col-6 pe-0">
                   <p>
                     <strong>Độ trễ của giấc ngủ:</strong> {sleepLatency}
                   </p>
@@ -564,12 +573,12 @@ function App() {
                     %
                   </p>
                 </div>
-                <div className="col-6">
+                <div className="col-6 ps-3 pe-0">
                   <table class="table table-bordered">
                     <thead>
                       <tr>
                         <th>Giai đoạn giấc ngủ</th>
-                        <th>Value</th>
+                        <th>Thời gian</th>
                         <th>%</th>
                       </tr>
                     </thead>
@@ -623,7 +632,7 @@ function App() {
                         </td>
                       </tr>
                       <tr>
-                        <td>SNon-REM N2</td>
+                        <td>Non-REM N2</td>
                         <td>{totalTimeByStage1["Sleep stage 2"]} s</td>
                         <td>
                           {(
@@ -660,19 +669,26 @@ function App() {
               </div>
             </div>
 
-            <div className="col-4">
+            <div className="col-5">
               <h5 className="text-center pb-3">
-                <strong>Biểu đồ tròn thể hiện </strong> 
+                <strong>Biểu đồ tròn thể hiện </strong>
                 <br></br>
-                  <strong>% giai đoạn giấc ngủ</strong>
+                <strong>% giai đoạn giấc ngủ</strong>
               </h5>
+
               <PieChart
                 series={[
                   {
                     data: pieChartData,
                   },
                 ]}
-                height={200}
+                sx={{
+                  [`& .${pieArcLabelClasses.root}`]: {
+                    fill: "white",
+                    fontSize: 12,
+                  },
+                }}
+                {...size}
               />
             </div>
           </div>
@@ -684,14 +700,16 @@ function App() {
           {conditionCount === 3 && (
             <div className="alert alert-success text-center">
               <div>
-                <strong>Tình trạng giấc ngủ của đối tượng: </strong>Tình trạng bình thường
+                <strong>Tình trạng giấc ngủ của đối tượng: </strong>Tình trạng
+                bình thường
               </div>
             </div>
           )}
           {(conditionCount === 2 || conditionCount === 1) && (
             <div className="alert alert-warning text-center">
               <div>
-                <strong>Tình trạng giấc ngủ của đối tượng: </strong>Tình trạng xem xét
+                <strong>Tình trạng giấc ngủ của đối tượng: </strong>Tình trạng
+                xem xét
               </div>
             </div>
           )}
@@ -699,7 +717,8 @@ function App() {
           {conditionCount === 0 && (
             <div className="alert alert-danger text-center">
               <div>
-                <strong>Tình trạng giấc ngủ của đối tượng: </strong>Tình trạng bất thường
+                <strong>Tình trạng giấc ngủ của đối tượng: </strong>Tình trạng
+                bất thường
               </div>
             </div>
           )}
