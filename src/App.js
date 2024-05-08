@@ -61,11 +61,11 @@ function App() {
         } else if (e.value === 4) {
           return "REM";
         } else if (e.value === 3) {
-          return "Non-REM N3";
+          return "Non-REM N1";
         } else if (e.value === 2) {
           return "Non-REM N2";
         } else if (e.value === 1) {
-          return "Non-REM N1";
+          return "Non-REM N3";
         } else {
           return " ";
         }
@@ -137,7 +137,7 @@ function App() {
         } else if (value === "Sleep stage 2") {
           return 2;
         } else if (value === "Sleep stage 1") {
-          return 1;
+          return 3;
         } else {
           return 0;
         }
@@ -558,7 +558,7 @@ function App() {
                     <strong>Tổng thời gian ghi dữ liệu:</strong> {formattedTRT}
                   </p>
                   <p>
-                    <strong>Sự thức tỉnh sau khi bắt đầu ngủ:</strong> {waso}
+                    <strong>Thức giấc sau lần ngủ đầu tiên:</strong> {waso}
                   </p>
                   <p>
                     <strong>% Hiệu quả của giấc ngủ:</strong>{" "}
@@ -616,11 +616,11 @@ function App() {
                         </td>
                       </tr>
                       <tr>
-                        <td>Non-REM N3</td>
-                        <td>{totalTimeByStage1["Sleep stage 3"]} s</td>
+                        <td>Non-REM N1</td>
+                        <td>{totalTimeByStage1["Sleep stage 1"]} s</td>
                         <td>
                           {(
-                            (totalTimeByStage1["Sleep stage 3"] /
+                            (totalTimeByStage1["Sleep stage 1"] /
                               (totalTimeByStage1["Sleep stage W"] +
                                 totalTimeByStage1["Sleep stage R"] +
                                 totalTimeByStage1["Sleep stage 3"] +
@@ -647,12 +647,13 @@ function App() {
                           %
                         </td>
                       </tr>
+                      
                       <tr>
-                        <td>Non-REM N1</td>
-                        <td>{totalTimeByStage1["Sleep stage 1"]} s</td>
+                        <td>Non-REM N3</td>
+                        <td>{totalTimeByStage1["Sleep stage 3"]} s</td>
                         <td>
                           {(
-                            (totalTimeByStage1["Sleep stage 1"] /
+                            (totalTimeByStage1["Sleep stage 3"] /
                               (totalTimeByStage1["Sleep stage W"] +
                                 totalTimeByStage1["Sleep stage R"] +
                                 totalTimeByStage1["Sleep stage 3"] +
